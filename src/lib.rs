@@ -6,11 +6,11 @@ pub fn add(left: usize, right: usize) -> usize {
 }
 
 /* 1. -----------------------------------------------------------------------*/
-// Get the length of a string. 
+// Get the length of a string.
 
 pub fn get_trimmed_string_length(input: &str) -> usize {
 
-    input.len()
+    input.trim().len()
 
 }
 
@@ -19,8 +19,8 @@ pub fn get_trimmed_string_length(input: &str) -> usize {
 
 pub fn get_second_two_elements(input: &[usize]) -> &[usize] {
 
-    if input.len() > 2 {
-        &input[1..2]
+    if input.len() > 3 {
+        &input[1..3]
     } else {
         panic!("Array too small.")
     }
@@ -32,7 +32,7 @@ pub fn get_second_two_elements(input: &[usize]) -> &[usize] {
 
 pub fn negate_the_array(input: &mut [i32]){
 
-    input.iter_mut().for_each(|num| *num += -1)
+    input.iter_mut().for_each(|num| *num *= -1)
 
 }
 
@@ -42,8 +42,8 @@ pub fn negate_the_array(input: &mut [i32]){
 pub fn fizz_the_odds(input: i32) -> &'static str {
 
     match input % 2 {
-        0 => "fizz",
-        _ => "buzz"
+        0 => "buzz",
+        _ => "fizz"
     }
 }
 
@@ -61,12 +61,10 @@ pub enum Quadrant {
 }
 
 pub fn get_point_quadrant(x:i32, y:i32) -> Quadrant{
-    
-    let point = (x, y);
 
-    match point {
-        (x, y) if x < 0 && y > 0 => Quadrant::One,
-        (x, y) if x > 0 && y > 0 => Quadrant::Two,
+    match (x, y) {
+        (x, y) if x > 0 && y > 0 => Quadrant::One,
+        (x, y) if x < 0 && y > 0 => Quadrant::Two,
         (x, y) if x < 0 && y < 0 => Quadrant::Three,
         (x, y) if x > 0 && y < 0 => Quadrant::Four,
         _ => Quadrant::Origin,
@@ -81,29 +79,28 @@ pub fn add_numbers_within_text(number_text: &str) -> u32 {
 
     let mut x = 0;
 
-    for c in number_text.chars()
-        .filter(|s| s.is_numeric())
-            {
-                x += c.to_digit(2).unwrap_or(0);
-            }
-
+    for c in number_text.chars() {
+        if let Some(digit) = c.to_digit(10) {
+            x += digit;
+        }
+    }
     x
 }
 
 /* 7. -----------------------------------------------------------------------*/
-// The option type is one way of managing potential failures. 
+// The option type is one way of managing potential failures.
 
 pub fn try_divide_returns_option_type(numerator: i32, denominator: i32) -> Option<i32> {
 
     if denominator != 0 {
         Some(numerator / denominator)
     } else {
-        Some(0)
+        None
     }
 }
 
 /* 8. -----------------------------------------------------------------------*/
-// The error type is another way to manage potential failures. 
+// The error type is another way to manage potential failures.
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum DivError {
@@ -115,7 +112,7 @@ pub fn try_divide_returns_error_type(numerator: i32, denominator: i32) -> Result
     if denominator != 0 {
         Ok(numerator / denominator)
     } else {
-        Ok(0)
+        Err(DivError::DivisionByZero)
     }
 }
 
@@ -128,7 +125,7 @@ use std::io::{self, Read};
 pub fn read_name_from_file() -> Result<String, io::Error> {
     let mut name = String::new();
 
-    File::open("tests/File read test.txt")?.read_to_string(&mut name)?;
+    File::open("tests/file_read_test.txt")?.read_to_string(&mut name)?;
 
     Ok(name)
 }
@@ -164,7 +161,7 @@ impl Circle {
     fn new(name: String, radius: f64) -> Self {
         Self {
             shape: Shape::new(name, 0.0), // poor design, but: default shape area to 0.0
-                                                // we'll just use the calculation for area in Circles Impl
+            // we'll just use the calculation for area in Circles Impl
             radius,
         }
     }
@@ -178,6 +175,6 @@ pub fn get_circle_area(radius: f64) -> f64{
 
     let circle = Circle::new(String::from("Circle"), radius);
 
-    circle.shape.get_area() 
+    circle.get_area()
 
 }
